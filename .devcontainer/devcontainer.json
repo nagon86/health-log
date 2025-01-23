@@ -1,0 +1,16 @@
+{
+    "name": "Dev Env",
+    "image": "mcr.microsoft.com/devcontainers/javascript-node:18",
+    "runArgs": ["--network=host"],
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "dbaeumer.vscode-eslint",
+                "esbenp.prettier-vscode",
+                "ms-vscode.vscode-typescript-next",
+                "ms-azuretools.vscode-docker"
+            ]
+        }
+    },
+    "remoteUser": "node"
+}
