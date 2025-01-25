@@ -4,10 +4,23 @@ const cors = require("cors");
 const jwt = require("jsonwebtoken");
 const { initDatabase, insertData, fetchData } = require("./database");
 const authMiddleware = require("./authMiddleware");
+const fs = require("fs");
+
 require("dotenv").config();
 
+let medicines = {};
+function loadMedicines() {
+    try {
+        const data = fs.readFileSync(process.env.MEDICINES_FILE, "utf8");
+        medicines = JSON.parse(data);
+    } catch (err) {
+        console.error("Could not load medicines.json", err);
+    }
+}
+loadMedicines();
+
 const app = express();
-const port = 3000;
+const port = 3001;
 
 app.use(cors());
 app.use(bodyParser.json());
@@ -27,14 +40,18 @@ app.post("/login", (req, res) => {
 
 // Protected routes
 app.post("/data", authMiddleware, (req, res) => {
-    const { date, category, text } = req.body;
-    insertData(date, category, text);
+    const { date, headache, shoulderache, medicine, text } = req.body;
+    insertData(date, headache, shoulderache, medicine, text);
     res.json({ message: "Data inserted successfully" });
 });
 
 app.get("/data", authMiddleware, (req, res) => {
     const { startDate, endDate } = req.query;
     fetchData(startDate, endDate, (rows) => res.json(rows));
+});
+
+app.get("/medicines", authMiddleware, (req, res) => {
+    res.json({...medicines});
 });
 
 app.listen(port, () => console.log(`Server running on http://localhost:${port}`));

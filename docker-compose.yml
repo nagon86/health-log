@@ -9,8 +9,10 @@ services:
       - ADMIN_USER=admin
       - ADMIN_PASS=admin123
       - JWT_SECRET=mysecretkey
+      - MEDICINES_FILE=/app/medicines.json
     volumes:
-      - ./backend:/app
+      - ./backend/data:/app/data
+      - ./backend/medicines.json:/app/medicines.json:ro
     restart: always
 
   frontend:

@@ -1,12 +1,13 @@
 import React from "react";
+import { Container, Typography } from "@mui/material";
 import DataForm from "../components/DataForm";
 
 const FormPage: React.FC = () => {
     return (
-        <div>
-            <h1>Insert Data</h1>
+        <Container>
+            <Typography variant="h3">Insert Data</Typography>
             <DataForm />
-        </div>
+        </Container>
     );
 };
 
