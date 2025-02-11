@@ -1,4 +1,5 @@
 const express = require("express");
+const path = require("path");
 const bodyParser = require("body-parser");
 const cors = require("cors");
 const jwt = require("jsonwebtoken");
@@ -20,10 +21,13 @@ function loadMedicines() {
 loadMedicines();
 
 const app = express();
-const port = 3001;
+const port = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(bodyParser.json());
+
+// Serve frontend static files
+app.use(express.static(path.join(__dirname, "public")));
 
 // Initialize database
 initDatabase();
@@ -52,6 +56,11 @@ app.get("/data", authMiddleware, (req, res) => {
 
 app.get("/medicines", authMiddleware, (req, res) => {
     res.json({...medicines});
+});
+
+// Catch-all route to serve React frontend
+app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
 app.listen(port, () => console.log(`Server running on http://localhost:${port}`));

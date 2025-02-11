@@ -1,10 +1,9 @@
 version: "3.8"
 services:
-  backend:
-    build:
-      context: ./backend
+  app:
+    build: .
     ports:
-      - "3001:3000"
+      - "3001:3001"
     environment:
       - ADMIN_USER=admin
       - ADMIN_PASS=admin123
@@ -13,13 +12,4 @@ services:
     volumes:
       - ./backend/data:/app/data
       - ./backend/medicines.json:/app/medicines.json:ro
-    restart: always
-
-  frontend:
-    build:
-      context: ./frontend
-    ports:
-      - "3000:80"
-    volumes:
-      - ./frontend:/app
     restart: always
