@@ -21,36 +21,62 @@ const DataForm: React.FC = () => {
   const [shoulderache, setShoulderache] = useState<number>(0);
   const [medicineOptions, setMedicineOptions] = useState<{
     [key: string]: number;
-  }>({
-  });
-  const [medicine, setMedicine] = useState<{ [key: string]: number }>({
-  });
+  }>({});
+  const [medicine, setMedicine] = useState<{ [key: string]: number }>({});
   const [text, setText] = useState<string>("");
-
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    getMedicines()
+    const getMedicines = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Unauthorized. Please login.");
+        setLoading(false);
+        return;
+      }
+      try {
+        const response = await axios.get("http://localhost:3001/medicines", {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        setMedicineOptions(response.data);
+      } catch (error) {
+        alert("Error fetching data");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    getMedicines();
   }, []);
 
-  const getMedicines = async () => {
-    const token = localStorage.getItem("token");
-    if (!token) {
-      alert("Unauthorized. Please login.");
-      setLoading(false);
-      return;
-    }
-    try {
-      const response = await axios.get("http://localhost:3001/medicines", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      setMedicineOptions(response.data);
-    } catch (error) {
-      alert("Error fetching data");
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    const fetchData = async () => {
+      const token = localStorage.getItem("token");
+      if (!token) {
+        alert("Unauthorized. Please login.");
+        return;
+      }
+      try {
+        const response = await axios.get("http://localhost:3001/data", {
+          params: {
+            startDate: date.startOf("day").toISOString(),
+            endDate: date.endOf("day").toISOString(),
+          },
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        if (Array.isArray(response.data) && response.data.length > 0) {
+          const { headache, shoulderache, medicine, text } = response.data[0];
+          setMedicine({ ...medicine });
+          setHeadache(headache);
+          setShoulderache(shoulderache);
+          setText(text);
+        }
+      } catch (error) {
+        alert("Error fetching data");
+      }
+    };
+    fetchData();
+  }, [date]);
 
   const handleSubmit = async () => {
     const token = localStorage.getItem("token");
@@ -72,11 +98,27 @@ const DataForm: React.FC = () => {
       );
       alert("Data saved successfully!");
     } catch (error) {
+      if (error.response && error.response.status === 409) {
+        await axios.put(
+          "http://localhost:3001/data",
+          {
+            date: date.startOf("day").toISOString(),
+            headache,
+            shoulderache,
+            medicine,
+            text,
+          },
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        // alert("Data updated successfully!");
+      }
       alert("Error saving data");
     }
   };
 
-  return loading ? <CircularProgress /> : (
+  return loading ? (
+    <CircularProgress />
+  ) : (
     <Stack spacing={2}>
       <DatePicker
         value={date}
