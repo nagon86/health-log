@@ -13,7 +13,7 @@ const AppRouter: React.FC = () => {
                 <ul>
                     {!isAuthenticated ? (
                         <li>
-                            <Link to="/login">Login</Link>
+                            <Link to="/loginpage">Login</Link>
                         </li>
                     ) : (
                         <>
@@ -28,9 +28,9 @@ const AppRouter: React.FC = () => {
                 </ul>
             </nav>
             <Routes>
-                <Route path="/login" element={<LoginPage />} />
-                <Route path="/form" element={isAuthenticated ? <FormPage /> : <Navigate to="/login" />} />
-                <Route path="/display" element={isAuthenticated ? <DisplayPage /> : <Navigate to="/login" />} />
+                <Route path="/loginpage" element={<LoginPage />} />
+                <Route path="/form" element={isAuthenticated ? <FormPage /> : <Navigate to="/loginpage" />} />
+                <Route path="/display" element={isAuthenticated ? <DisplayPage /> : <Navigate to="/loginpage" />} />
                 <Route path="/" element={<Navigate to="/form" replace />} />
             </Routes>
         </Router>
