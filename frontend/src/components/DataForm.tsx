@@ -15,6 +15,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import dayjs, { Dayjs } from "dayjs";
 import axios from "axios";
 
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001/api";
+
 const DataForm: React.FC = () => {
   const [date, setDate] = useState<Dayjs>(dayjs().startOf("day"));
   const [headache, setHeadache] = useState<number>(0);
@@ -35,7 +37,7 @@ const DataForm: React.FC = () => {
         return;
       }
       try {
-        const response = await axios.get("http://localhost:3001/medicines", {
+        const response = await axios.get(`${API_URL}/medicines`, {
           headers: { Authorization: `Bearer ${token}` },
         });
         setMedicineOptions(response.data);
@@ -57,7 +59,7 @@ const DataForm: React.FC = () => {
         return;
       }
       try {
-        const response = await axios.get("http://localhost:3001/data", {
+        const response = await axios.get(`${API_URL}/data`, {
           params: {
             startDate: date.startOf("day").toISOString(),
             endDate: date.endOf("day").toISOString(),
@@ -86,7 +88,7 @@ const DataForm: React.FC = () => {
     }
     try {
       await axios.post(
-        "http://localhost:3001/data",
+        `${API_URL}/data`,
         {
           date: date.startOf("day").toISOString(),
           headache,
@@ -100,7 +102,7 @@ const DataForm: React.FC = () => {
     } catch (error) {
       if (error.response && error.response.status === 409) {
         await axios.put(
-          "http://localhost:3001/data",
+          `${API_URL}/data`,
           {
             date: date.startOf("day").toISOString(),
             headache,

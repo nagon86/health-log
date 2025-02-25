@@ -1,5 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import axios from "axios";
+
+const API_URL = process.env.REACT_APP_API_URL || "http://localhost:3001/api";
 
 const DataDisplay: React.FC = () => {
     const [startDate, setStartDate] = useState("");
@@ -13,7 +15,7 @@ const DataDisplay: React.FC = () => {
             return;
         }
         try {
-            const response = await axios.get("http://localhost:3001/data", {
+            const response = await axios.get(`${API_URL}/data`, {
                 params: { startDate, endDate },
                 headers: { Authorization: `Bearer ${token}`},
             });
