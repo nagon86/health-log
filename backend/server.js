@@ -38,7 +38,7 @@ app.use(express.static(path.join(__dirname, "public")));
 initDatabase();
 
 // Authentication endpoint
-app.post("/login", (req, res) => {
+app.post("/api/login", (req, res) => {
   const { username, password } = req.body;
   if (
     username === process.env.ADMIN_USER &&
@@ -53,7 +53,7 @@ app.post("/login", (req, res) => {
 });
 
 // Protected routes
-app.post("/data", authMiddleware, (req, res) => {
+app.post("/api/data", authMiddleware, (req, res) => {
   const { date, headache, shoulderache, medicine, text } = req.body;
   if (!date || !headache || !shoulderache || !medicine) {
     res.status(400).json({ message: "Missing required fields" });
@@ -67,7 +67,7 @@ app.post("/data", authMiddleware, (req, res) => {
   });
 });
 
-app.put("/data", authMiddleware, (req, res) => {
+app.put("/api/data", authMiddleware, (req, res) => {
   const { date, headache, shoulderache, medicine, text } = req.body;
   if (!date || !headache || !shoulderache || !medicine) {
     res.status(400).json({ message: "Missing required fields" });
@@ -81,12 +81,12 @@ app.put("/data", authMiddleware, (req, res) => {
   });
 });
 
-app.get("/data", authMiddleware, (req, res) => {
+app.get("/api/data", authMiddleware, (req, res) => {
   const { startDate, endDate } = req.query;
   fetchData(startDate, endDate, (rows) => res.json(rows));
 });
 
-app.get("/medicines", authMiddleware, (req, res) => {
+app.get("/api/medicines", authMiddleware, (req, res) => {
   res.json({ ...medicines });
 });
 
