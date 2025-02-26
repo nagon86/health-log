@@ -31,19 +31,18 @@ loadMedicines();
 const app = express();
 const port = process.env.PORT || 3001;
 
-app.use(
-  cors({
-    origin: function (origin, callback) {
-      console.log("Origin: ", origin);
-      if (!origin || allowedOrigins.includes(origin)) {
-        callback(null, true);
-      } else {
-        callback(new Error("Not allowed by CORS"));
-      }
-    },
-    credentials: true,
-  })
-);
+const corsOptions = {
+  origin: function (origin, callback) {
+    console.log("Origin: ", origin);
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error("Not allowed by CORS"));
+    }
+  },
+  credentials: true,
+};
+app.use(cors());
 app.use(bodyParser.json());
 
 // Serve frontend static files
@@ -52,6 +51,7 @@ app.use(express.static(path.join(__dirname, "public")));
 // Initialize database
 initDatabase();
 
+app.options("*", cors());
 // Authentication endpoint
 app.post("/api/login", (req, res) => {
   const { username, password } = req.body;
