@@ -13,6 +13,9 @@ const authMiddleware = require("./authMiddleware");
 const fs = require("fs");
 
 require("dotenv").config();
+const allowedOrigins = process.env.ALLOWED_ORIGINS
+  ? [process.env.ALLOWED_ORIGINS]
+  : [];
 
 let medicines = {};
 function loadMedicines() {
@@ -28,7 +31,19 @@ loadMedicines();
 const app = express();
 const port = process.env.PORT || 3001;
 
-app.use(cors());
+app.use(
+  cors({
+    origin: function (origin, callback) {
+      console.log("Origin: ", origin);
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
+    credentials: true,
+  })
+);
 app.use(bodyParser.json());
 
 // Serve frontend static files
