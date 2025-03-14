@@ -1,17 +1,30 @@
 version: "3.8"
 services:
-  app:
-    build: .
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: my-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    environment:
+      - REACT_APP_API_URL=http://backend:3001/api
+      - ALLOWED_ORIGINS=http://192.168.18.18:3001
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: my-backend
     ports:
       - "3001:3001"
     environment:
-      - ADMIN_USER=admin
-      - ADMIN_PASS=admin123
-      - JWT_SECRET=mysecretkey
-      - MEDICINES_FILE=/app/medicines.json
-      - REACT_APP_API_URL=/api
-      - ALLOWED_ORIGINS=http://192.168.18.18:3001
+        - ADMIN_USER=admin
+        - ADMIN_PASS=admin123
+        - JWT_SECRET=mysecretkey
+        - MEDICINES_FILE=/app/medicines.json
     volumes:
-      - ./backend/data:/app/data
-      - ./backend/medicines.json:/app/medicines.json:ro
-    restart: always
+        - ./backend/data:/app/data
+        - ./backend/medicines.json:/app/medicines.json:ro
