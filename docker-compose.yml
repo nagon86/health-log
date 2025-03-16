@@ -1,25 +1,19 @@
 version: "3.8"
 services:
-  backend:
+  app:
     build:
-      context: ./backend
+      context: .
+      network: host
+      args:
+        REACT_APP_API_URL: /api
     ports:
-      - "3001:3000"
+      - "3001:3001"
     environment:
-      - ADMIN_USER=admin
-      - ADMIN_PASS=admin123
-      - JWT_SECRET=mysecretkey
-      - MEDICINES_FILE=/app/medicines.json
+        - ADMIN_USER=admin
+        - ADMIN_PASS=admin123
+        - JWT_SECRET=mysecretkey
+        - MEDICINES_FILE=/app/medicines.json
+        - ALLOWED_ORIGINS=http://localhost:3001,http://app.example.com
     volumes:
-      - ./backend/data:/app/data
-      - ./backend/medicines.json:/app/medicines.json:ro
-    restart: always
-
-  frontend:
-    build:
-      context: ./frontend
-    ports:
-      - "3000:80"
-    volumes:
-      - ./frontend:/app
-    restart: always
+        - ./backend/data:/app/data
+        - ./backend/medicines.json:/app/medicines.json:ro
