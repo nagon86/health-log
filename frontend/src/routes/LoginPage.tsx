@@ -17,7 +17,7 @@ const LoginPage: React.FC = () => {
             });
             // Save the token to localStorage
             localStorage.setItem("token", response.data.token);
-            alert("Login successful!");
+            console.log("Login successful!");
             window.location.href = "/form"; // Redirect to the data form page
         } catch (err: any) {
             setError("Invalid credentials. Please try again.");
