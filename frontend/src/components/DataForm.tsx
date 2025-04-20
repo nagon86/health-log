@@ -75,6 +75,11 @@ const DataForm: React.FC = () => {
           setHeadache(headache);
           setShoulderache(shoulderache);
           setText(text);
+        } else {
+          setMedicine({})
+          setHeadache(0);
+          setShoulderache(0);
+          setText("");
         }
       } catch (error) {
         alert("Error fetching data");
